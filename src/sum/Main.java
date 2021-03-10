@@ -17,8 +17,10 @@ public class Main {
 		
 		String numBooks;
 		String pricesEveryBook;
+		String moneyPeter;
 		String [] pricesBooks;
 		int[] integerPricesBooks;
+		String message;
 		
 		numBooks = br.readLine();
 		
@@ -36,8 +38,21 @@ public class Main {
 			integerPricesBooks[i] = priceOneByOne;
 		}
 		
+		moneyPeter = br.readLine();
+		
+		int moneyPeterHas = Integer.parseInt(moneyPeter);
+		
+		message = booksToBuy(moneyPeterHas, integerPricesBooks);
+		
 		br.close();
 		bw.close();
+	}
+	
+	public static String booksToBuy(int moneyPeterHas, int[] integerPricesBooks) {
+		
+		String message = "";
+		
+		return message;
 	}
 
 }
