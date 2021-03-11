@@ -31,7 +31,7 @@ public class Main {
 		pricesEveryBook = br.readLine();
 		pricesBooks = pricesEveryBook.split(SEPARATOR);
 
-		integerPricesBooks = new int[pricesBooks.length];
+		integerPricesBooks = new int[numBooksToPrice];
 
 		for (int i = 0; i < pricesBooks.length; i++) {
 
@@ -45,7 +45,10 @@ public class Main {
 		int moneyPeterHas = Integer.parseInt(moneyPeter);
 
 		message = booksToBuy(moneyPeterHas, integerPricesBooks);
-
+		
+		bw.write(message);
+		bw.flush();
+		
 		br.close();
 		bw.close();
 	}
@@ -60,6 +63,7 @@ public class Main {
 		int resultOfSearch = 0;
 		int bookOne = 0;
 		int bookTwo = 0;
+		int difference = 0;
 		List<Integer> listOfResults = new ArrayList<>();
 
 		for (int i = 0; i < listOfPriceOne.length; i++) {
@@ -78,11 +82,25 @@ public class Main {
 				for (int j = 0; j < listOfPriceOne.length; j++) {
 
 					if(listOfPriceOne[i]+listOfPriceOne[j] == moneyOfPeter) {
-						;
+						if(bookOne == 0 && bookTwo == 0) {
+							bookOne = listOfPriceOne[0];
+							bookTwo = listOfPriceOne[0];
+							difference = bookOne-bookTwo;
+						}
+						else {
+							if(listOfPriceOne[i] - listOfPriceOne[j] < difference && listOfPriceOne[i] + listOfPriceOne[j] == moneyOfPeter) {
+								
+								difference = listOfPriceOne[i] - listOfPriceOne[j];
+								bookOne = listOfPriceOne[i];
+								bookTwo = listOfPriceOne[j];
+							}
+						}
 					}
 				}
 			}
 		}
+		
+		message = "Peter should buy  books whose prices are "+bookOne+" and "+bookTwo;
 		
 		return message;
 	}
