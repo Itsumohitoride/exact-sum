@@ -5,10 +5,16 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 
+/**
+ * @author Luis Miguel Ossa Arias
+ *
+ */
 public class Main {
 
 	public final static String SEPARATOR = " ";
+	public static int position = 0;
 
 	public static void main(String[] args) throws IOException {
 
@@ -63,11 +69,11 @@ public class Main {
 		int bookOne = 0;
 		int bookTwo = 0;
 		
-		insertionSort(integerPricesBooks);
+		Arrays.sort(integerPricesBooks);
 		
 		for (int i = 0; i < integerPricesBooks.length; i++) {
 			
-			if(bookOne == 0 && bookTwo == 0) {
+			if(bookOne == 0 && bookTwo == 0 && i - position != 0) {
 				
 				bookOne = integerPricesBooks[i];
 				bookTwo = binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas);
@@ -80,7 +86,7 @@ public class Main {
 				}
 			}
 			else {
-				if(integerPricesBooks[i] - binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas) < difference && integerPricesBooks[i] + binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas) == moneyPeterHas) {
+				if(integerPricesBooks[i] - binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas) < difference && integerPricesBooks[i] + binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas) == moneyPeterHas && i - position != 0) {
 
 					difference = bookOne - bookTwo;
 					bookOne = integerPricesBooks[i];
@@ -113,6 +119,7 @@ public class Main {
 			
 			if(disorganizedList[m]+x == moneyOfPeter) {
 				numberInThatPosition = disorganizedList[m];
+				position = m;
 			}
 			else if(disorganizedList[m]+x > moneyOfPeter) {
 				j = m-1;
@@ -123,18 +130,5 @@ public class Main {
 		}
 		
 		return numberInThatPosition;
-	}
-	
-	public static void insertionSort(int[] disorganizedList) {
-		
-		for (int i = 1; i < disorganizedList.length; i++) {
-			for (int j = i; j > 0 && disorganizedList[j-1] > disorganizedList[j]; j--) {
-				
-				int temporal = disorganizedList[j];
-				
-				disorganizedList[j] = disorganizedList[j-1];
-				disorganizedList[j-1] = temporal;
-			}
-		}
 	}
 }
