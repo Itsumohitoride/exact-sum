@@ -5,8 +5,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -25,121 +23,118 @@ public class Main {
 		String message;
 
 		numBooks = br.readLine();
+		
+		while(numBooks != null) {
 
-		int numBooksToPrice = Integer.parseInt(numBooks);
+			int numBooksToPrice = Integer.parseInt(numBooks);
 
-		pricesEveryBook = br.readLine();
-		pricesBooks = pricesEveryBook.split(SEPARATOR);
+			pricesEveryBook = br.readLine();
+			pricesBooks = pricesEveryBook.split(SEPARATOR);
 
-		integerPricesBooks = new int[numBooksToPrice];
+			integerPricesBooks = new int[numBooksToPrice];
 
-		for (int i = 0; i < pricesBooks.length; i++) {
+			for (int i = 0; i < pricesBooks.length; i++) {
 
-			int priceOneByOne = Integer.parseInt(pricesBooks[i]);
+				int priceOneByOne = Integer.parseInt(pricesBooks[i]);
 
-			integerPricesBooks[i] = priceOneByOne;
+				integerPricesBooks[i] = priceOneByOne;
+			}
+
+			moneyPeter = br.readLine();
+
+			int moneyPeterHas = Integer.parseInt(moneyPeter);
+
+			message = booksToBuy(moneyPeterHas, integerPricesBooks);
+			
+			bw.write(message+"\n\n");
+			
+			numBooks = br.readLine();
+			numBooks = br.readLine();
 		}
 
-		moneyPeter = br.readLine();
-
-		int moneyPeterHas = Integer.parseInt(moneyPeter);
-
-		message = booksToBuy(moneyPeterHas, integerPricesBooks);
-		
-		bw.write(message);
-		bw.flush();
-		
 		br.close();
 		bw.close();
 	}
-
+	
 	public static String booksToBuy(int moneyPeterHas, int[] integerPricesBooks) {
-
+		
 		String message = "";
-
-		int[] listOfPriceOne = integerPricesBooks;
-		int moneyOfPeter = moneyPeterHas;
-		int sum = 0;
-		int resultOfSearch = 0;
+		int difference = 100000;
 		int bookOne = 0;
 		int bookTwo = 0;
-		int difference = 0;
-		List<Integer> listOfResults = new ArrayList<>();
-
-		for (int i = 0; i < listOfPriceOne.length; i++) {
-			for (int j = 0; j < listOfPriceOne.length; j++) {
-
-				sum = listOfPriceOne[i]+listOfPriceOne[j];
-
-				addSorted(listOfResults,sum);
+		
+		insertionSort(integerPricesBooks);
+		
+		for (int i = 0; i < integerPricesBooks.length; i++) {
+			
+			if(bookOne == 0 && bookTwo == 0) {
+				
+				bookOne = integerPricesBooks[i];
+				bookTwo = binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas);
+				
+				if(bookOne > bookTwo) {
+					difference = bookOne-bookTwo;
+				}
+				else{
+					difference = bookTwo-bookOne;
+				}
 			}
-		}
-		
-		resultOfSearch = binarySearch(listOfResults,moneyOfPeter);
-		
-		if(resultOfSearch > -1) {
-			for (int i = 0; i < listOfPriceOne.length; i++) {
-				for (int j = 0; j < listOfPriceOne.length; j++) {
+			else {
+				if(integerPricesBooks[i] - binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas) < difference && integerPricesBooks[i] + binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas) == moneyPeterHas) {
 
-					if(listOfPriceOne[i]+listOfPriceOne[j] == moneyOfPeter) {
-						if(bookOne == 0 && bookTwo == 0) {
-							bookOne = listOfPriceOne[0];
-							bookTwo = listOfPriceOne[0];
-							difference = bookOne-bookTwo;
-						}
-						else {
-							if(listOfPriceOne[i] - listOfPriceOne[j] < difference && listOfPriceOne[i] + listOfPriceOne[j] == moneyOfPeter) {
-								
-								difference = listOfPriceOne[i] - listOfPriceOne[j];
-								bookOne = listOfPriceOne[i];
-								bookTwo = listOfPriceOne[j];
-							}
-						}
+					difference = bookOne - bookTwo;
+					bookOne = integerPricesBooks[i];
+					bookTwo = binarySearch(integerPricesBooks,integerPricesBooks[i],moneyPeterHas);
+					
+					if(bookOne > bookTwo) {
+						difference = bookOne-bookTwo;
+					}
+					else{
+						difference = bookTwo-bookOne;
 					}
 				}
 			}
 		}
 		
-		message = "Peter should buy  books whose prices are "+bookOne+" and "+bookTwo;
+		message = "Peter should buy books whose prices are "+bookOne+" and "+bookTwo+".";
 		
 		return message;
 	}
 	
-	public static int binarySearch(List<Integer> resultsList, int x) {
+	public static int binarySearch(int[] disorganizedList, int x, int moneyOfPeter) {
 		
-		int position = -1;
+		int numberInThatPosition = -1;
 		int i = 0;
-		int j = resultsList.size()-1;
+		int j = disorganizedList.length-1;
 		
-		while(i <= j && position < 0) {
+		while(i <= j && numberInThatPosition < 0) {
 			
 			int m = (i+j)/2;
 			
-			if(resultsList.get(m) == x) {
-				position = m;
+			if(disorganizedList[m]+x == moneyOfPeter) {
+				numberInThatPosition = disorganizedList[m];
 			}
-			else if(resultsList.get(m) > x) {
+			else if(disorganizedList[m]+x > moneyOfPeter) {
 				j = m-1;
 			}
-			else {
+			else if(disorganizedList[m]+x < moneyOfPeter){
 				i = m+1;
 			}
 		}
 		
-		return position;
+		return numberInThatPosition;
 	}
-
-	public static void addSorted(List<Integer> listOfResults, int newValue) {
-
-		if(listOfResults.isEmpty()) {
-			listOfResults.add(newValue);
-		}
-		else {
-			int i = 0;
-			while(i < listOfResults.size() && listOfResults.get(i) < newValue) {
-				i++;			
+	
+	public static void insertionSort(int[] disorganizedList) {
+		
+		for (int i = 1; i < disorganizedList.length; i++) {
+			for (int j = i; j > 0 && disorganizedList[j-1] > disorganizedList[j]; j--) {
+				
+				int temporal = disorganizedList[j];
+				
+				disorganizedList[j] = disorganizedList[j-1];
+				disorganizedList[j-1] = temporal;
 			}
-			listOfResults.add(i,newValue);
 		}
 	}
 }
