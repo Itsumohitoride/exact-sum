@@ -1,5 +1,3 @@
-package sum;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,7 +18,7 @@ public class Main {
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));	
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));	
-
+		
 		String numBooks;
 		String pricesEveryBook;
 		String moneyPeter;
